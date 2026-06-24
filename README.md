@@ -2,7 +2,7 @@
 
 Minimal, privacy-first browser startpage. Replaces new tab with a clock, multi-engine search, weather, and customizable links.
 
-[Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/void-tab/)
+[Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/void-tab/) · [Try live demo](https://akbarahmedjonov.github.io/void-tab/)
 
 ## Features
 
