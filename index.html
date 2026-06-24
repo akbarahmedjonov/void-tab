@@ -31,6 +31,10 @@
       href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
     <style>
       :root {
         --bg-color: #121212;
@@ -221,7 +225,8 @@
         transition: opacity 0.2s;
       }
 
-      .link-item:hover .remove-btn {
+      .link-item:hover .remove-btn,
+      .links-list.managing .remove-btn {
         opacity: 1;
       }
 
@@ -283,6 +288,23 @@
       #settings-btn:hover {
         color: var(--hover-color);
         background: var(--input-bg);
+      }
+
+      #settings-btn i {
+        display: inline-block;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(180deg);
+        }
+      }
+
+      #settings-btn.spinning i {
+        animation: spin 0.4s ease-out;
       }
 
       #settings-panel {
@@ -429,11 +451,15 @@
       </form>
 
       <div class="links-header">
-        <button class="icon-btn" id="collapse-btn" title="toggle links">
-          −
+        <button
+          class="icon-btn"
+          id="collapse-btn"
+          title="toggle links"
+        ></button>
+        <span class="title" id="collapse-toggle">bookmarks</span>
+        <button class="icon-btn" id="manage-btn" title="manage links">
+          <i class="ph ph-pencil-simple"></i>
         </button>
-        <span class="title" id="collapse-toggle">links</span>
-        <button class="icon-btn" id="manage-btn" title="manage links">✎</button>
       </div>
 
       <div class="links-body" id="links-body">
@@ -441,12 +467,16 @@
         <div class="add-link-area hidden" id="add-link-area">
           <input type="text" id="link-name-input" placeholder="name" />
           <input type="text" id="link-url-input" placeholder="url" />
-          <button class="icon-btn" id="add-link-btn">+</button>
+          <button class="icon-btn" id="add-link-btn">
+            <i class="ph ph-plus"></i>
+          </button>
         </div>
       </div>
     </div>
 
-    <button id="settings-btn" title="settings">⚙</button>
+    <button id="settings-btn" title="settings">
+      <i class="ph ph-gear-six"></i>
+    </button>
 
     <div id="settings-panel" class="hidden">
       <h2>search engine</h2>

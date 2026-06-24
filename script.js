@@ -322,6 +322,9 @@ function closeSettings() {
 function toggleSettings() {
     if (settingsPanel.classList.contains('hidden')) openSettings();
     else closeSettings();
+    settingsBtn.classList.remove('spinning');
+    void settingsBtn.offsetWidth;
+    settingsBtn.classList.add('spinning');
 }
 
 settingsBtn.addEventListener('click', toggleSettings);
@@ -383,7 +386,7 @@ function renderLinks() {
 
             const saveBtn = document.createElement('button');
             saveBtn.className = 'icon-btn';
-            saveBtn.textContent = '✓';
+            saveBtn.innerHTML = '<i class="ph ph-check"></i>';
             saveBtn.addEventListener('click', () => {
                 const name = nameInput.value.trim();
                 const url = urlInput.value.trim();
@@ -397,7 +400,7 @@ function renderLinks() {
 
             const cancelBtn = document.createElement('button');
             cancelBtn.className = 'icon-btn';
-            cancelBtn.textContent = '✕';
+            cancelBtn.innerHTML = '<i class="ph ph-x"></i>';
             cancelBtn.addEventListener('click', () => {
                 editingIndex = -1;
                 renderLinks();
@@ -422,7 +425,7 @@ function renderLinks() {
             if (manageMode) {
                 const editBtn = document.createElement('button');
                 editBtn.className = 'icon-btn remove-btn';
-                editBtn.textContent = '✎';
+                editBtn.innerHTML = '<i class="ph ph-pencil"></i>';
                 editBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     editingIndex = i;
@@ -431,7 +434,7 @@ function renderLinks() {
 
                 const rm = document.createElement('button');
                 rm.className = 'icon-btn remove-btn';
-                rm.textContent = '✕';
+                rm.innerHTML = '<i class="ph ph-x"></i>';
                 rm.addEventListener('click', (e) => {
                     e.preventDefault();
                     links.splice(i, 1);
@@ -450,6 +453,7 @@ function renderLinks() {
 manageBtn.addEventListener('click', () => {
     manageMode = !manageMode;
     manageBtn.classList.toggle('active', manageMode);
+    linksList.classList.toggle('managing', manageMode);
     addLinkArea.classList.toggle('hidden', !manageMode);
     editingIndex = -1;
     renderLinks();
@@ -478,7 +482,7 @@ linkNameInput.addEventListener('keydown', (e) => {
 function setCollapsed(collapsed) {
     localStorage.setItem(STORAGE_KEY_COLLAPSED, collapsed ? '1' : '');
     linksBody.classList.toggle('collapsed', collapsed);
-    collapseBtn.textContent = collapsed ? '+' : '−';
+    collapseBtn.innerHTML = collapsed ? '<i class="ph ph-caret-down"></i>' : '<i class="ph ph-caret-up"></i>';
 }
 
 function toggleCollapsed() {
