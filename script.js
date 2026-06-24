@@ -247,11 +247,19 @@ function getSearchUrl(query) {
     return SEARCH_ENGINES[key].url + encodeURIComponent(query);
 }
 
+function isUrl(str) {
+    if (/^https?:\/\//i.test(str)) return true;
+    return /^[a-z0-9-]+(\.[a-z0-9-]+)+(:[0-9]+)?(\/.*)?$/i.test(str) && !/\s/.test(str);
+}
+
 searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const query = searchInput.value.trim();
     if (!query) return;
-    window.location.href = getSearchUrl(query);
+    const href = isUrl(query)
+        ? (query.startsWith('http://') || query.startsWith('https://') ? query : 'https://' + query)
+        : getSearchUrl(query);
+    window.location.href = href;
 });
 
 // --- Settings panel ---
