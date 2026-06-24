@@ -354,6 +354,7 @@ const linksBody = document.getElementById('links-body');
 let links = getLinks() || [...DEFAULT_LINKS];
 if (!getLinks()) setLinks(links);
 let manageMode = false;
+let editingIndex = -1;
 
 function faviconUrl(url) {
     try {
@@ -367,29 +368,79 @@ function renderLinks() {
     for (const [i, link] of links.entries()) {
         const item = document.createElement('div');
         item.className = 'link-item';
+        item.dataset.index = i;
 
-        const img = document.createElement('img');
-        img.src = faviconUrl(link.url);
-        img.loading = 'lazy';
-        img.alt = '';
-        item.appendChild(img);
+        if (manageMode && editingIndex === i) {
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = link.name;
+            nameInput.style.width = '80px';
 
-        const a = document.createElement('a');
-        a.href = link.url;
-        a.textContent = link.name;
-        item.appendChild(a);
+            const urlInput = document.createElement('input');
+            urlInput.type = 'text';
+            urlInput.value = link.url;
+            urlInput.style.width = '120px';
 
-        if (manageMode) {
-            const rm = document.createElement('button');
-            rm.className = 'icon-btn remove-btn';
-            rm.textContent = '✕';
-            rm.addEventListener('click', (e) => {
-                e.preventDefault();
-                links.splice(i, 1);
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'icon-btn';
+            saveBtn.textContent = '✓';
+            saveBtn.addEventListener('click', () => {
+                const name = nameInput.value.trim();
+                const url = urlInput.value.trim();
+                if (!name || !url) return;
+                const fullUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url;
+                links[i] = { name, url: fullUrl };
                 setLinks(links);
+                editingIndex = -1;
                 renderLinks();
             });
-            item.appendChild(rm);
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'icon-btn';
+            cancelBtn.textContent = '✕';
+            cancelBtn.addEventListener('click', () => {
+                editingIndex = -1;
+                renderLinks();
+            });
+
+            item.appendChild(nameInput);
+            item.appendChild(urlInput);
+            item.appendChild(saveBtn);
+            item.appendChild(cancelBtn);
+        } else {
+            const img = document.createElement('img');
+            img.src = faviconUrl(link.url);
+            img.loading = 'lazy';
+            img.alt = '';
+            item.appendChild(img);
+
+            const a = document.createElement('a');
+            a.href = link.url;
+            a.textContent = link.name;
+            item.appendChild(a);
+
+            if (manageMode) {
+                const editBtn = document.createElement('button');
+                editBtn.className = 'icon-btn remove-btn';
+                editBtn.textContent = '✎';
+                editBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    editingIndex = i;
+                    renderLinks();
+                });
+
+                const rm = document.createElement('button');
+                rm.className = 'icon-btn remove-btn';
+                rm.textContent = '✕';
+                rm.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    links.splice(i, 1);
+                    setLinks(links);
+                    renderLinks();
+                });
+                item.appendChild(editBtn);
+                item.appendChild(rm);
+            }
         }
 
         linksList.appendChild(item);
@@ -400,6 +451,7 @@ manageBtn.addEventListener('click', () => {
     manageMode = !manageMode;
     manageBtn.classList.toggle('active', manageMode);
     addLinkArea.classList.toggle('hidden', !manageMode);
+    editingIndex = -1;
     renderLinks();
 });
 

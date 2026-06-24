@@ -24,7 +24,7 @@ Minimal, privacy-first browser startpage. Replaces new tab with a clock, multi-e
 To package for AMO:
 
 ```sh
-zip -r void-tab-1.0.2.zip manifest.json index.html script.js icon.png
+zip -r void-tab-1.0.3.zip manifest.json index.html script.js icon.png README.md LICENSE.md
 ```
 
 ### Chromium (Chrome/Edge/Brave/Vivaldi, etc.)
@@ -44,7 +44,6 @@ zip -r void-tab-1.0.2.zip manifest.json index.html script.js icon.png
 ## Structure
 
 ```
-Startpage-For-Browser/
 ├── manifest.json   # MV3 extension manifest
 ├── index.html      # UI + inline CSS
 ├── script.js       # all logic

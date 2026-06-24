@@ -183,6 +183,21 @@
         gap: 4px;
       }
 
+      .link-item input[type="text"] {
+        background: var(--input-bg);
+        color: var(--text-color);
+        border: 1px solid var(--input-border);
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-size: 0.8rem;
+        outline: none;
+        font-family: inherit;
+      }
+
+      .link-item input[type="text"]:focus {
+        border-color: var(--accent-color);
+      }
+
       .link-item img {
         width: 14px;
         height: 14px;
@@ -323,7 +338,7 @@
       }
 
       .settings-option label::before {
-        content: '○';
+        content: "○";
         display: inline-block;
         width: 1em;
         text-align: center;
@@ -332,12 +347,12 @@
       }
 
       .settings-option input[type="checkbox"]:checked + label::before {
-        content: '✓';
+        content: "✓";
         color: var(--text-color);
       }
 
       .settings-option input[type="radio"]:checked + label::before {
-        content: '●';
+        content: "●";
         color: var(--text-color);
       }
 

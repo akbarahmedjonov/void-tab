@@ -16,7 +16,7 @@ No build/test/lint/typecheck commands exist. Only operation:
 
 ```sh
 # Package for AMO submission
-zip -r void-tab-1.0.2.zip manifest.json index.html script.js icon.png README.md LICENSE.md
+zip -r void-tab-1.0.3.zip manifest.json index.html script.js icon.png README.md LICENSE.md
 ```
 
 ## Dev workflow
