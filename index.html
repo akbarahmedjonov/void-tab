@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A minimal, privacy-focused startpage for your browser. Search with DuckDuckGo, Google, Claude, and more."
+    />
+    <meta
+      name="keywords"
+      content="startpage, new tab, browser extension, minimal, privacy, search"
+    />
+    <meta property="og:title" content="void-tab" />
+    <meta
+      property="og:description"
+      content="A minimal, privacy-focused startpage for your browser."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="void-tab" />
+    <meta
+      name="twitter:description"
+      content="A minimal, privacy-focused startpage for your browser."
+    />
+    <link rel="icon" type="image/png" href="icon.png" />
+    <title>void-tab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --accent-color: #888888;
+        --input-bg: #1e1e1e;
+        --input-border: #333333;
+        --hover-color: #ffffff;
+      }
+
+      html[data-theme="light"] {
+        --bg-color: #f5f5f5;
+        --text-color: #1a1a1a;
+        --accent-color: #666666;
+        --input-bg: #ffffff;
+        --input-border: #cccccc;
+        --hover-color: #000000;
+      }
+
+      html[data-theme="dark"] {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --accent-color: #888888;
+        --input-bg: #1e1e1e;
+        --input-border: #333333;
+        --hover-color: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Fira Code", monospace;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 600px;
+        width: 90%;
+      }
+
+      #clock {
+        font-size: 4rem;
+        font-weight: 300;
+        letter-spacing: -2px;
+        margin-bottom: 0.5rem;
+      }
+
+      #weather {
+        font-size: 0.8rem;
+        color: var(--accent-color);
+        margin-bottom: 2rem;
+      }
+
+      #search-form {
+        margin-bottom: 3rem;
+      }
+
+      #search-form input[type="text"] {
+        width: 100%;
+        padding: 12px 20px;
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        color: var(--text-color);
+        font-size: 1rem;
+        text-align: center;
+        outline: none;
+        transition: border-color 0.3s;
+        font-family: inherit;
+      }
+
+      #search-form input[type="text"]:focus {
+        border-color: var(--accent-color);
+      }
+
+      .links-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 12px;
+        user-select: none;
+      }
+
+      .links-header .title {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+        text-transform: lowercase;
+        cursor: pointer;
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 2px 6px;
+        border-radius: 3px;
+        transition:
+          color 0.2s,
+          background 0.2s;
+        font-family: inherit;
+        line-height: 1;
+      }
+
+      .icon-btn:hover {
+        color: var(--hover-color);
+        background: var(--input-bg);
+      }
+
+      .icon-btn.active {
+        color: var(--hover-color);
+      }
+
+      .links-body {
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        max-height: 200px;
+      }
+
+      .links-body.collapsed {
+        max-height: 0;
+      }
+
+      .links-list {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .link-item img {
+        width: 14px;
+        height: 14px;
+        opacity: 0.6;
+      }
+
+      .link-item a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-size: 0.9rem;
+        text-transform: lowercase;
+        transition: color 0.2s ease;
+      }
+
+      .link-item a:hover {
+        color: var(--text-color);
+      }
+
+      .link-item .remove-btn {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .link-item:hover .remove-btn {
+        opacity: 1;
+      }
+
+      .add-link-area {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .add-link-area input {
+        background: var(--input-bg);
+        color: var(--text-color);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        outline: none;
+        font-family: inherit;
+        width: 120px;
+      }
+
+      .add-link-area input:focus {
+        border-color: var(--accent-color);
+      }
+
+      .add-link-area input::placeholder {
+        color: var(--accent-color);
+        opacity: 0.5;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      #settings-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        font-size: 1.4rem;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        line-height: 1;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          color 0.2s,
+          background 0.2s;
+        z-index: 10;
+      }
+
+      #settings-btn:hover {
+        color: var(--hover-color);
+        background: var(--input-bg);
+      }
+
+      #settings-panel {
+        position: fixed;
+        bottom: 68px;
+        right: 20px;
+        background: var(--bg-color);
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        padding: 16px;
+        min-width: 260px;
+        max-height: 70vh;
+        overflow-y: auto;
+        z-index: 100;
+      }
+
+      #settings-panel h2 {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin: 0 0 4px 0;
+        text-transform: lowercase;
+      }
+
+      .settings-sep {
+        display: block;
+        width: 100%;
+        height: 1px;
+        background: var(--input-border);
+        margin: 10px 0;
+      }
+
+      .settings-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .settings-option input {
+        display: none;
+      }
+
+      .settings-option label {
+        cursor: pointer;
+        font-size: 0.85rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .settings-option label::before {
+        content: '○';
+        display: inline-block;
+        width: 1em;
+        text-align: center;
+        color: var(--accent-color);
+        font-size: 0.9rem;
+      }
+
+      .settings-option input[type="checkbox"]:checked + label::before {
+        content: '✓';
+        color: var(--text-color);
+      }
+
+      .settings-option input[type="radio"]:checked + label::before {
+        content: '●';
+        color: var(--text-color);
+      }
+
+      .coord-inputs {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .coord-inputs input {
+        flex: 1;
+        padding: 4px 6px;
+        background: transparent;
+        color: var(--text-color);
+        border: none;
+        border-bottom: 1px solid var(--input-border);
+        font-size: 0.8rem;
+        outline: none;
+        font-family: inherit;
+      }
+
+      .coord-inputs input:focus {
+        border-bottom-color: var(--accent-color);
+      }
+
+      .coord-inputs input::placeholder {
+        color: var(--accent-color);
+        opacity: 0.4;
+      }
+
+      .coord-label {
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        margin-top: 6px;
+        opacity: 0.7;
+      }
+
+      #custom-engine-input {
+        width: 100%;
+        padding: 4px 6px;
+        margin-top: 4px;
+        background: transparent;
+        color: var(--text-color);
+        border: none;
+        border-bottom: 1px solid var(--input-border);
+        font-size: 0.8rem;
+        outline: none;
+        font-family: inherit;
+      }
+
+      #custom-engine-input:focus {
+        border-bottom-color: var(--accent-color);
+      }
+
+      #custom-engine-input::placeholder {
+        color: var(--accent-color);
+        opacity: 0.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="clock">00:00</div>
+      <div id="weather"></div>
+
+      <form id="search-form">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="search..."
+          autofocus
+          autocomplete="off"
+        />
+      </form>
+
+      <div class="links-header">
+        <button class="icon-btn" id="collapse-btn" title="toggle links">
+          −
+        </button>
+        <span class="title" id="collapse-toggle">links</span>
+        <button class="icon-btn" id="manage-btn" title="manage links">✎</button>
+      </div>
+
+      <div class="links-body" id="links-body">
+        <div class="links-list" id="links-list"></div>
+        <div class="add-link-area hidden" id="add-link-area">
+          <input type="text" id="link-name-input" placeholder="name" />
+          <input type="text" id="link-url-input" placeholder="url" />
+          <button class="icon-btn" id="add-link-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="settings-btn" title="settings">⚙</button>
+
+    <div id="settings-panel" class="hidden">
+      <h2>search engine</h2>
+      <div id="engine-list"></div>
+      <span class="settings-sep"></span>
+
+      <h2>theme</h2>
+      <div id="theme-list"></div>
+      <span class="settings-sep"></span>
+
+      <h2>weather</h2>
+      <div class="settings-option">
+        <input type="checkbox" id="weather-toggle" />
+        <label for="weather-toggle">show weather</label>
+      </div>
+      <div class="coord-label">custom location (optional)</div>
+      <div class="coord-inputs">
+        <input type="text" id="weather-lat" placeholder="latitude" />
+        <input type="text" id="weather-lon" placeholder="longitude" />
+      </div>
+
+      <div id="custom-engine-section" class="hidden">
+        <span class="settings-sep"></span>
+        <h2>custom engine url</h2>
+        <input
+          type="text"
+          id="custom-engine-input"
+          placeholder="https://example.com/search?q=%s"
+        />
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
