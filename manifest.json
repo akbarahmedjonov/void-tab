@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "void-tab",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A minimal, privacy-focused startpage for your browser.",
   "chrome_settings_overrides": {
     "homepage": "index.html"
